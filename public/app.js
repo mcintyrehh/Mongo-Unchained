@@ -1,34 +1,40 @@
 $(document).ready(function () {
   // Grab the articles as a json
   $.getJSON("/articles", function (data) {
-    // For each one
+    // For each one{data[i].img}
     for (var i = 0; i < data.length; i++) {
       // Display the apropos information on the page
-      $("#articles").append(`<div class="col-sm-12">
-      <div class="card">
-        <div class="card-body">
-          <img class="img-thumbnail float-left mr-2" src="${data[i].img}">
-          <h3 class="card-title"><a href="${data[i].link}">${data[i].title}</a></h3>
-          <div href="#" data-id="${data[i]._id}" class="btn btn-primary float-left mr-2 p-2 dropBtn"> Add a note ! </div>
-          <p class="card-text">${data[i].excerpt}</p>
-          <div id="${data[i]._id}" class="hidden">
-            <div class="input-group"> 
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Notes:</span>
+      $("#articles").append(
+        `<div class="col-sm-12">
+          <div class="card my-1">
+            <div class="card-body py-1 row">
+              <div class="col-md-3 text-center">
+                <img class="img-thumbnail" src="${data[i].img}">
+                <div href="#" data-id="${data[i]._id}" class="btn btn-primary dropBtn">
+                  Add a note!</div>
+              </div>
+              <div class="col-md-9">
+                <h3 class="card-title"><a href="${data[i].link}">${data[i].title}</a></h3>
+                <div class="card-text p-0 excerpt">${data[i].excerpt}</div>
+                <div id="${data[i]._id}" class="hidden" style="display: none;">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Notes:</span>
+                    </div>
+                    <textarea class="form-control" placeholder="add notes here!"></textarea>
+                  </div>
                 </div>
-                <textarea class="form-control" placeholder="add notes here!"></textarea>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>`);
+        </div>`);
     }
   });
 
   $("div").on("click", ".dropBtn", function (event) {
     const btnID = $(this).data("id");
     console.log(btnID);
-    $('#' +btnID).toggle();
+    $('#' + btnID).toggle("medium");
     event.stopPropagation();
   })
 })

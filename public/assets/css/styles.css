@@ -8,8 +8,11 @@ body {
 #articles {
     width: 100vw;
 }
-.dropBtn {
-    padding-left: 8px;
+.card-title {
+    font-size: 14pt;
+}
+.excerpt {
+    font-size: 12pt;
 }
 .card {
     color: black

@@ -59,7 +59,6 @@ app.get("/scrape", function(req, res) {
         .find("div.excerpt")
         .children("p")
         .text()
-      // console.log($(this).html())
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
@@ -68,7 +67,8 @@ app.get("/scrape", function(req, res) {
         })
         .catch(function(err) {
           // If an error occurred, send it to the client
-          return res.json(err);
+          console.log(err);
+          // return res.json(err);
         });
     });
     // If we were able to successfully scrape and save an Article, send a message to the client
