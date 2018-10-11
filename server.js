@@ -8,10 +8,10 @@ var mongoose = require("mongoose");
 var axios = require("axios");
 var cheerio = require("cheerio");
 
-// Require all models
+// Require all models (inside models is code to manually require Articles and Notes)
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -40,20 +40,22 @@ app.get("/scrape", function(req, res) {
     var $ = cheerio.load(response.data);
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("div div.item__text").each(function(i, element) {
+    $("div.item__content").each(function(i, element) {
       // Save an empty result object
       var result = {};
       // Add the text and href of every link, and save them as properties of the result object
-      console.log("THIS " + $(this))
       result.title = $(this)
+        .find("h1.headline")
+        .children("a")
         .children("div")
         .text();
-        console.log("this.children: " + $(this).children("h1"))
       result.link = $(this)
-        .children("h1")
-        .children("a")
+        .find("a.js_link")
         .attr("href");
-      console.log(result);
+      result.img = $(this)
+        .find("img")
+        .attr("src")
+         console.log(result);
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
@@ -65,24 +67,23 @@ app.get("/scrape", function(req, res) {
           return res.json(err);
         });
     });
-
     // If we were able to successfully scrape and save an Article, send a message to the client
     res.send("Scrape Complete");
   });
 });
 
 // Route for getting all Articles from the db
-// app.get("/articles", function(req, res) {
-//   // TODO: Finish the route so it grabs all of the articles
-//   db.Article.find({}, function(err, data) {
-//     if (err) {
-//       console.log (err);
-//       res.end();
-//     } else {
-//       res.json(data);
-//     }
-//   })
-// });
+app.get("/articles", function(req, res) {
+  // TODO: Finish the route so it grabs all of the articles
+  db.Article.find({}, function(err, data) {
+    if (err) {
+      console.log (err);
+      res.end();
+    } else {
+      res.json(data);
+    }
+  })
+});
 
 // Route for grabbing a specific Article by id, populate it with it's note
 // app.get("/articles/:id", function(req, res) {
