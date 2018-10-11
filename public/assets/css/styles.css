@@ -5,6 +5,15 @@ body {
 .header {
     color: whitesmoke
 }
+#articles {
+    width: 100vw;
+}
+.dropBtn {
+    padding-left: 8px;
+}
 .card {
     color: black
+}
+.hidden {
+    display: none;
 }

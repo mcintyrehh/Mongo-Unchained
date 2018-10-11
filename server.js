@@ -54,8 +54,12 @@ app.get("/scrape", function(req, res) {
         .attr("href");
       result.img = $(this)
         .find("img")
-        .attr("src")
-         console.log(result);
+        .attr("src");
+      result.excerpt = $(this)
+        .find("div.excerpt")
+        .children("p")
+        .text()
+      // console.log($(this).html())
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
@@ -101,7 +105,7 @@ app.get("/articles", function(req, res) {
 //     .catch(function(err) {
 //       // If an error occurs, send the error back to the client
 //       res.json(err);
-//     });
+// //     });
 // });
 
 // Route for saving/updating an Article's associated Note

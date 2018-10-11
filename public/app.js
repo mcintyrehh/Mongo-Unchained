@@ -1,12 +1,37 @@
-// Grab the articles as a json
-$.getJSON("/articles", function(data) {
-  // For each one
-  for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-  }
-});
+$(document).ready(function () {
+  // Grab the articles as a json
+  $.getJSON("/articles", function (data) {
+    // For each one
+    for (var i = 0; i < data.length; i++) {
+      // Display the apropos information on the page
+      $("#articles").append(`<div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <img class="img-thumbnail float-left mr-2" src="${data[i].img}">
+          <h3 class="card-title"><a href="${data[i].link}">${data[i].title}</a></h3>
+          <div href="#" data-id="${data[i]._id}" class="btn btn-primary float-left mr-2 p-2 dropBtn"> Add a note ! </div>
+          <p class="card-text">${data[i].excerpt}</p>
+          <div id="${data[i]._id}" class="hidden">
+            <div class="input-group"> 
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Notes:</span>
+                </div>
+                <textarea class="form-control" placeholder="add notes here!"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+    }
+  });
 
+  $("div").on("click", ".dropBtn", function (event) {
+    const btnID = $(this).data("id");
+    console.log(btnID);
+    $('#' +btnID).toggle();
+    event.stopPropagation();
+  })
+})
 
 // // Whenever someone clicks a p tag
 // $(document).on("click", "p", function() {
