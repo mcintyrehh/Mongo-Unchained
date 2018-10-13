@@ -33,14 +33,14 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 // Routes
 
 // A GET route for scraping the echoJS website
-app.get("/scrape", function(req, res) {
+app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
-  axios.get("https://www.clickhole.com/c/news").then(function(response) {
+  axios.get("https://www.clickhole.com/c/news").then(function (response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("div.item__content").each(function(i, element) {
+    $("div.item__content").each(function (i, element) {
       // Save an empty result object
       var result = {};
       // Add the text and href of every link, and save them as properties of the result object
@@ -59,36 +59,56 @@ app.get("/scrape", function(req, res) {
         .find("div.excerpt")
         .children("p")
         .text()
+      result.saved = false;
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
-        .then(function(dbArticle) {
+        .then(function (dbArticle) {
           // View the added result in the console
           console.log(dbArticle);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           // If an error occurred, send it to the client
           console.log(err);
           // return res.json(err);
         });
     });
     // If we were able to successfully scrape and save an Article, send a message to the client
-    res.send("Scrape Complete");
+    res.send("/");
   });
 });
 
 // Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
+app.get("/articles", function (req, res) {
   // TODO: Finish the route so it grabs all of the articles
-  db.Article.find({}, function(err, data) {
+  db.Article.find({}, function (err, data) {
     if (err) {
-      console.log (err);
+      console.log(err);
       res.end();
     } else {
       res.json(data);
     }
   })
 });
-
+//get route for saving our articles
+//if it
+app.post("/articles/:id", function (req, res) {
+  db.Article.update(
+    { _id: req.params.id },
+    { $set: { saved: req.body.saved } }, function(err, data) {
+      if (err) console.log(err);
+      console.log(data);
+    }
+  )
+})
+app.get("/favorites", function(req, res) {
+  db.Article.find({saved: true}, function(err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(data);
+    }
+  })
+})
 // Route for grabbing a specific Article by id, populate it with it's note
 // app.get("/articles/:id", function(req, res) {
 //   // TODO
@@ -109,24 +129,24 @@ app.get("/articles", function(req, res) {
 // });
 
 // Route for saving/updating an Article's associated Note
-// app.post("/articles/:id", function(req, res) {
-//   db.Note.create(req.body, function(err, data) {
-//     if (err) {
-//       console.log(err)
-//     } else(
-//       res.json(data)
-//     )
-//   }
-//   .then(db.Articles.update({note}, {$set: {}})
+app.post("/create-note/:id", function(req, res) {
+  db.Note.create(req.body, function(err, data) {
+    if (err) {
+      console.log(err)
+    } else(
+      res.json(data)
+    )
+  })
+  // .then(db.Articles.update({note}, {$set: {}}))
 //   // TODO
 //   // ====
 //   // save the new note that gets posted to the Notes collection
 //   // then find an article from the req.params.id
 //   // and update it's "note" property with the _id of the new note
-  
-// });
+
+});
 
 // Start the server
-app.listen(PORT, function() {
+app.listen(PORT, function () {
   console.log("App running on port " + PORT + "!");
 });

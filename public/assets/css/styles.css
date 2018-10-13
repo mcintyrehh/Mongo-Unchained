@@ -17,6 +17,9 @@ body {
 .card {
     color: black
 }
+.fav-div{
+    color: gold
+}
 .hidden {
     display: none;
 }
