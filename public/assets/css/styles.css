@@ -11,6 +11,9 @@ body {
 .card-title {
     font-size: 14pt;
 }
+.x-icon {
+    color: red;
+}
 .excerpt {
     font-size: 12pt;
 }

@@ -149,7 +149,12 @@ app.post("/create-note/:id", function(req, res) {
     res.json(err);
   });
 })
-
+app.post("/delete-note/:id", function(req, res) {
+  db.Note.findByIdAndDelete({_id: req.params.id}, function(err, data) {
+    if (err) console.log(err);
+    res.json(data);
+  })
+})
 // Start the server
 app.listen(PORT, function () {
   console.log("App running on port " + PORT + "!");

@@ -74,8 +74,23 @@ $("body").on("click", ".create-note", function () {
       body: noteText
     }
   }).then(function(data) {
-    $(`#time-${data._id}`).text(`${data.note.date}`);
-    $(`#body-${data._id}`).text(data.note.body);
+    console.log(data);
+    noteCardGenerator(data);
+  })
+  $(`.note-text#text-${noteID}`).val("");
+})
+$("body").on("click", ".x-icon", function() {
+  const noteID = $(this).attr("data-id")
+  const cardID = $(this).attr("data-cardID");
+  $(`#note-${cardID}`).empty();
+  $.ajax({
+    method: "POST",
+    url: `/delete-note/${noteID}`,
+    data: {
+      body: noteID
+    }
+  }).then(function(data) {
+    console.log(data);
   })
 })
 const articleCardGenerator = (object) => {
@@ -125,7 +140,8 @@ const noteCardGenerator = (noteObj) => {
   if (noteObj.note) {
     $(`#note-${noteObj._id}`).append(
       `<div class="card my-2">
-        <div class="card-body pb-0" id="body-${noteObj._id}">
+        <div class=text-right"><i data-cardID="${noteObj._id}" data-id="${noteObj.note._id}" class="float-right far fa-times-circle btn x-icon"></i></div>
+        <div class="card-body py-0" id="body-${noteObj._id}">
            ${noteObj.note.body}
         </div>
         <div class="text-right text-muted m-2" id="time-${noteObj._id}">${noteObj.note.date}</div>
