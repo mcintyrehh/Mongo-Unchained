@@ -128,7 +128,6 @@ const articleCardGenerator = (object) => {
                     <div class="input-group-append">
                     <button class="btn btn-outline-success create-note" data-id="${object[i]._id}" type="button" id="button-addon2">Submit</button>
                   </div>
-                  </div>
                 </div>
               </div>
             </div>
