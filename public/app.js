@@ -5,6 +5,11 @@ $(document).ready(function () {
       window.location.href = data;
     })
   })
+  $(".clear-btn").on("click", function() {
+    $.get("/clear", function(data) {
+      window.location.href = data;
+    })
+  })
   // Grab the articles in JSON to add a card for each entry
   $.getJSON("/articles", function (data) {
     articleCardGenerator(data);
@@ -12,9 +17,27 @@ $(document).ready(function () {
   //clicking the add a note button animates the notes input
   $("div").on("click", ".dropBtn", function (event) {
     const btnID = $(this).data("id");
+    $(`#note-${btnID}`).empty();
     console.log(btnID);
     $('#' + btnID).toggle("medium");
     event.stopPropagation();
+    $.ajax({
+      method: "GET",
+      url: "/articles/" + btnID
+    }).then(function(data) {
+      console.log(data);
+      if (data.note) {
+        $(`#note-${btnID}`).append(
+          `<div class="card my-2">
+            <div class="card-body pb-0">
+               ${data.note.body}
+            </div>
+            <div class="text-right text-muted m-2">${data.note.date}</div>
+          </div>`
+        )
+      }
+     
+    })
   })
   //
   $("body").on("click", ".fav-div", function () {
@@ -91,6 +114,7 @@ const articleCardGenerator = (object) => {
                 <h3 class="card-title"><a href="${object[i].link}">${object[i].title}</a></h3>
                 <div class="card-text p-0 excerpt">${object[i].excerpt}</div>
                 <div id="${object[i]._id}" class="hidden" style="display: none;">
+                  <div id="note-${object[i]._id}"></div>
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">Notes:</span>
