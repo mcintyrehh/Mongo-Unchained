@@ -35,28 +35,29 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 // A GET route for scraping the echoJS website
 app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
-  axios.get("https://www.clickhole.com/c/news").then(function (response) {
+  axios.get("https://thehardtimes.net/music/").then(function (response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("div.item__content").each(function (i, element) {
+    $("div.type-post").each(function (i, element) {
       // Save an empty result object
       var result = {};
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this)
-        .find("h1.headline")
+        .find(".post-title")
         .children("a")
-        .children("div")
         .text();
+        console.log(result.title);
       result.link = $(this)
-        .find("a.js_link")
+        .find(".post-title")
+        .children("a")
         .attr("href");
       result.img = $(this)
         .find("img")
-        .attr("src");
+        .attr("src")
       result.excerpt = $(this)
-        .find("div.excerpt")
+        .find(".post-content")
         .children("p")
         .text()
       result.saved = false;
